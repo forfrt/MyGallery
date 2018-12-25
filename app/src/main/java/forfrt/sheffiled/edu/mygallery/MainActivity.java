@@ -1,11 +1,11 @@
 package forfrt.sheffiled.edu.mygallery;
 
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -14,8 +14,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar= findViewById(R.id.ToolBar);
-        setSupportActionBar(toolbar);
+        //Toolbar toolbar= findViewById(R.id.ToolBar);
+        //setSupportActionBar(toolbar);
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
