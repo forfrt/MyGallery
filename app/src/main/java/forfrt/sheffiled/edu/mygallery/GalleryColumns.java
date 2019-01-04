@@ -10,7 +10,7 @@ class GalleryColumns {
     protected String column_title;
     protected List<ColumnImage> images;
 
-    public GalleryColumns(String sort_title, List<ColumnImage> images) {
+    public GalleryColumns(String column_title, List<ColumnImage> images) {
         this.column_title = column_title;
         this.images=images;
     }
