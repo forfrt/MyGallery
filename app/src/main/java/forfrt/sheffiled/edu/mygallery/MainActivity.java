@@ -5,14 +5,20 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.ExifInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager mLayoutManager;
     private List<GalleryColumns> columns;
 
+    private Activity activity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +52,42 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar= findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        this.activity=this;
+
+        this.initData();
+        Log.v("MainActivity", "Data initilaized");
+
+        checkPermissions(getApplicationContext());
+        initEasyImage();
+
+        mRecyclerView = (RecyclerView) findViewById(R.id.gallery_content_columns);
+        mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        Log.v("MainActivity", "Layout set");
+        mAdapter = new GalleryAdapter(columns);
+        mRecyclerView.setAdapter(mAdapter);
+
+        FloatingActionButton fab_camera = (FloatingActionButton) findViewById(R.id.gallery_main_camera);
+        fab_camera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EasyImage.openCamera(getActivity(), 0);
+            }
+        });
+
+        FloatingActionButton fab_gal = (FloatingActionButton) findViewById(R.id.gallery_main_gallery);
+        fab_gal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EasyImage.openGallery(getActivity(), 0);
+            }
+        });
+    }
+
+    private void initData(){
+        this.columns=new ArrayList<GalleryColumns>();
 
         ArrayList<ColumnImage> column_1_images=new ArrayList<ColumnImage>();
         column_1_images.add(new ColumnImage(R.drawable.joe1));
@@ -66,20 +110,9 @@ public class MainActivity extends AppCompatActivity {
         column_3_images.add(new ColumnImage(R.drawable.joe1));
         column_3_images.add(new ColumnImage(R.drawable.joe2));
 
-        columns=new ArrayList<GalleryColumns>();
-        columns.add(new GalleryColumns("column_1", column_1_images));
-        columns.add(new GalleryColumns("column_2", column_2_images));
-        columns.add(new GalleryColumns("column_3", column_3_images));
-
-        Log.v("MainActivity", "Data initilaized");
-
-        mRecyclerView = (RecyclerView) findViewById(R.id.gallery_columns);
-        mLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-
-        Log.v("MainActivity", "Layout set");
-        mAdapter = new GalleryAdapter(columns);
-        mRecyclerView.setAdapter(mAdapter);
+        this.columns.add(new GalleryColumns("column_1", column_1_images));
+        this.columns.add(new GalleryColumns("column_2", column_2_images));
+        this.columns.add(new GalleryColumns("column_3", column_3_images));
     }
 
     private void initEasyImage() {
@@ -135,6 +168,68 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        EasyImage.handleActivityResult(requestCode, resultCode, data, this, new DefaultCallback() {
+            @Override
+            public void onImagePickerError(Exception e, EasyImage.ImageSource source, int type) {
+                //Some error handling
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onImagesPicked(List<File> imageFiles, EasyImage.ImageSource source, int type) {
+                onPhotosReturned(imageFiles);
+            }
+
+            @Override
+            public void onCanceled(EasyImage.ImageSource source, int type) {
+                //Cancel handling, you might wanna remove taken photo if it was canceled
+                if (source == EasyImage.ImageSource.CAMERA) {
+                    File photoFile = EasyImage.lastlyTakenButCanceledPhoto(getActivity());
+                    if (photoFile != null) photoFile.delete();
+                }
+            }
+        });
+    }
+
+    /**
+     * add to the grid
+     * @param returnedPhotos
+     */
+    private void onPhotosReturned(List<File> returnedPhotos) {
+        ArrayList<ColumnImage> column_4_images=new ArrayList<ColumnImage>();
+
+//        for(File file: returnedPhotos){
+//            ExifInterface exif=new ExifInterface(file);
+//            Log.v("onPhotosReturned", );
+//        }
+        this.columns.add(new GalleryColumns("column_4", getImageElements(returnedPhotos)));
+        mAdapter.notifyDataSetChanged();
+        mRecyclerView.scrollToPosition(returnedPhotos.size() - 1);
+    }
+
+    /**
+     * given a list of photos, it creates a list of myElements
+     * @param returnedPhotos
+     * @return
+     */
+    private List<ColumnImage> getImageElements(List<File> returnedPhotos) {
+        List<ColumnImage> imageElementList= new ArrayList<>();
+        for (File file: returnedPhotos){
+            ColumnImage element= new ColumnImage(file);
+            imageElementList.add(element);
+        }
+        return imageElementList;
+    }
+
+    public Activity getActivity(){
+        return this.activity;
+
+    }
+
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
@@ -153,4 +248,5 @@ public class MainActivity extends AppCompatActivity {
 
         return false;
     }
+
 }

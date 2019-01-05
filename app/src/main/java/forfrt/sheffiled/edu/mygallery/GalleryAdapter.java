@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.View_Holder> {
     private Context context;
-    private List<GalleryColumns> columns;
+    private static List<GalleryColumns> columns;
 
     public GalleryAdapter(List<GalleryColumns> columns) {
         this.columns = columns;
@@ -44,14 +44,14 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.View_Hol
         //Use the provided View Holder on the onCreateViewHolder method to populate the
         // current row on the RecyclerView
 
-        if (holder!=null && this.columns.get(position)!=null) {
-            Log.v("GalleryAdapter", "onBindViewHolder: ");
-            holder.column_title.setText(this.columns.get(position).column_title);
+        if (holder!=null && columns.get(position)!=null) {
+            Log.v("GalleryAdapter", "onBindViewHolder: "+position);
+            holder.column_title.setText(columns.get(position).column_title);
 
             int number_of_column=4;
             holder.recyclerView.setLayoutManager(new GridLayoutManager(this.context, number_of_column));
 
-            ColumnAdapter columnAdapter=new ColumnAdapter(this.columns.get(position).images);
+            ColumnAdapter columnAdapter=new ColumnAdapter(position, columns.get(position).images);
             holder.recyclerView.setAdapter(columnAdapter);
 
         }
@@ -60,18 +60,21 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.View_Hol
 
     @Override
     public int getItemCount() {
-        return this.columns.size();
+        return columns.size();
+    }
+
+    public static List<GalleryColumns> getItems(){
+        return columns;
     }
 
     public class View_Holder extends RecyclerView.ViewHolder {
         TextView column_title;
         RecyclerView recyclerView;
 
-
         View_Holder(View itemView) {
             super(itemView);
-            column_title = (TextView) itemView.findViewById(R.id.gallery_column_title);
-            recyclerView = (RecyclerView) itemView.findViewById(R.id.grid_recycler_view);
+            column_title = (TextView) itemView.findViewById(R.id.gallery_columns_title);
+            recyclerView = (RecyclerView) itemView.findViewById(R.id.gallery_columns_recycle);
         }
     }
 }

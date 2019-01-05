@@ -8,7 +8,7 @@
     tools:showIn="@layout/gallery_main">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/gallery_columns"
+        android:id="@+id/gallery_content_columns"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

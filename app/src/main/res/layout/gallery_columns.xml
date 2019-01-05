@@ -12,14 +12,14 @@
     tools:showIn="@layout/gallery_content">
 
     <TextView
-        android:id="@+id/gallery_column_title"
+        android:id="@+id/gallery_columns_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
         />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/grid_recycler_view"
+        android:id="@+id/gallery_columns_recycle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
     <!--<androidx.recyclerview.widget.RecyclerView-->
