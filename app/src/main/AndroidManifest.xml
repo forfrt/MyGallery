@@ -4,6 +4,10 @@
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    //To determine if we are connected to Internet or not.
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    // To determine user’s location using GPS
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"
@@ -12,6 +16,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        //Google maps API_KEY
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,7 +31,13 @@
 
         <activity
             android:name=".ShowImageActivity"
+
             />
+        <activity
+            android:name=".MapsActivity"
+            android:label="GoogleMpas">
+        </activity>
+        <uses-library android:name="org.apache.http.legacy" android:required="false"/>
 
     </application>
 

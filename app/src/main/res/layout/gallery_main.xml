@@ -49,7 +49,15 @@
         app:backgroundTint="@android:color/holo_orange_light"
         app:fabSize="normal"
         android:src="@drawable/ic_gallery_black_24dp" />
-
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/gallery_main_maps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:layout_margin="@dimen/gallery_margin"
+        app:backgroundTint="@android:color/holo_orange_light"
+        app:fabSize="normal"
+        android:src="@drawable/ic_add_a_photo_black_24dp" />
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/gallery_main_camera"
         android:layout_width="wrap_content"

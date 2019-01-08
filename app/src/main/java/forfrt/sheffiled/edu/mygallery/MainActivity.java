@@ -76,7 +76,15 @@ public class MainActivity extends AppCompatActivity {
                 EasyImage.openCamera(getActivity(), 0);
             }
         });
-
+        FloatingActionButton fab_map = (FloatingActionButton) findViewById(R.id.gallery_main_maps);
+        fab_map.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.setClassName("forfrt.sheffiled.edu.mygallery", "forfrt.sheffiled.edu.mygallery.MapsActivity");
+                startActivity(intent);
+            }
+        });
         FloatingActionButton fab_gal = (FloatingActionButton) findViewById(R.id.gallery_main_gallery);
         fab_gal.setOnClickListener(new View.OnClickListener() {
             @Override
