@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">My Gallery</string>
     <string name="gallery_mode_prompt">Gallery</string>
+    <string name="title">Please enter the title</string>
+    <string name="description">Please enter your description about this photo</string>
+    <string name="action_store_data">Save</string>
 
     <string-array name="gallery_mode">
         <item>Gallery</item>

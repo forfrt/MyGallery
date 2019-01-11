@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="forfrt.sheffiled.edu.mygallery">
+    package="forfrt.sheffiled.edu.assignment">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -11,8 +11,14 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".MainActivity">
+        android:theme="@style/AppTheme"
+        >
+
+        <!--android:theme="@style/AppTheme.NoActionBar"-->
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/Theme.Design.NoActionBar"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,8 +28,13 @@
 
         <activity
             android:name=".ShowImageActivity"
+            android:theme="@style/Theme.Design.NoActionBar"
             />
 
+        <activity
+            android:name=".EditImageActivity"
+            android:theme="@style/Theme.Design.NoActionBar"
+            />
     </application>
 
 </manifest>

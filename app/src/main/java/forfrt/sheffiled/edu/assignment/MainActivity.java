@@ -1,8 +1,9 @@
-package forfrt.sheffiled.edu.mygallery;
+package forfrt.sheffiled.edu.assignment;
 
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,26 +11,29 @@ import android.content.pm.PackageManager;
 import android.media.ExifInterface;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
+import forfrt.sheffiled.edu.assignment.model.PhotoData;
+import forfrt.sheffiled.edu.assignment.presenter.EditImageViewModel;
 import pl.aprilapps.easyphotopicker.DefaultCallback;
 import pl.aprilapps.easyphotopicker.EasyImage;
 
@@ -41,21 +45,31 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private List<GalleryColumns> columns;
 
-    private Activity activity;
+    private List<GalleryColumns> columns;
+    private List<PhotoData> photoDatas;
+    private List<String> days;
+    private List<String> filePaths;
+
+    private EditImageViewModel editViewModel;
+
+    private AppCompatActivity activity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.gallery_main);
 
-        Toolbar toolbar= findViewById(R.id.toolbar);
+        this.activity=this;
+        this.columns=new ArrayList<GalleryColumns>();
+        this.photoDatas=new ArrayList<PhotoData>();
+        this.days=new ArrayList<String>();
+
+        Toolbar toolbar= (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        this.activity=this;
-
-        this.initData();
+        this.editViewModel=ViewModelProviders.of(this).get(EditImageViewModel.class);
+//        this.initData();
         Log.v("MainActivity", "Data initilaized");
 
         checkPermissions(getApplicationContext());
@@ -86,34 +100,33 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void initData(){
-        this.columns=new ArrayList<GalleryColumns>();
-
-        ArrayList<ColumnImage> column_1_images=new ArrayList<ColumnImage>();
-        column_1_images.add(new ColumnImage(R.drawable.joe1));
-        column_1_images.add(new ColumnImage(R.drawable.joe1));
-        column_1_images.add(new ColumnImage(R.drawable.joe1));
-        column_1_images.add(new ColumnImage(R.drawable.joe2));
-        column_1_images.add(new ColumnImage(R.drawable.joe3));
-
-        ArrayList<ColumnImage> column_2_images=new ArrayList<ColumnImage>();
-        column_2_images.add(new ColumnImage(R.drawable.joe2));
-        column_2_images.add(new ColumnImage(R.drawable.joe2));
-        column_2_images.add(new ColumnImage(R.drawable.joe2));
-        column_2_images.add(new ColumnImage(R.drawable.joe2));
-        column_2_images.add(new ColumnImage(R.drawable.joe2));
-        column_2_images.add(new ColumnImage(R.drawable.joe3));
-        column_2_images.add(new ColumnImage(R.drawable.joe1));
-
-        ArrayList<ColumnImage> column_3_images=new ArrayList<ColumnImage>();
-        column_3_images.add(new ColumnImage(R.drawable.joe3));
-        column_3_images.add(new ColumnImage(R.drawable.joe1));
-        column_3_images.add(new ColumnImage(R.drawable.joe2));
-
-        this.columns.add(new GalleryColumns("column_1", column_1_images));
-        this.columns.add(new GalleryColumns("column_2", column_2_images));
-        this.columns.add(new GalleryColumns("column_3", column_3_images));
-    }
+//    private void initData(){
+//
+//        ArrayList<ColumnImage> column_1_images=new ArrayList<ColumnImage>();
+//        column_1_images.add(new ColumnImage(R.drawable.joe1));
+//        column_1_images.add(new ColumnImage(R.drawable.joe1));
+//        column_1_images.add(new ColumnImage(R.drawable.joe1));
+//        column_1_images.add(new ColumnImage(R.drawable.joe2));
+//        column_1_images.add(new ColumnImage(R.drawable.joe3));
+//
+//        ArrayList<ColumnImage> column_2_images=new ArrayList<ColumnImage>();
+//        column_2_images.add(new ColumnImage(R.drawable.joe2));
+//        column_2_images.add(new ColumnImage(R.drawable.joe2));
+//        column_2_images.add(new ColumnImage(R.drawable.joe2));
+//        column_2_images.add(new ColumnImage(R.drawable.joe2));
+//        column_2_images.add(new ColumnImage(R.drawable.joe2));
+//        column_2_images.add(new ColumnImage(R.drawable.joe3));
+//        column_2_images.add(new ColumnImage(R.drawable.joe1));
+//
+//        ArrayList<ColumnImage> column_3_images=new ArrayList<ColumnImage>();
+//        column_3_images.add(new ColumnImage(R.drawable.joe3));
+//        column_3_images.add(new ColumnImage(R.drawable.joe1));
+//        column_3_images.add(new ColumnImage(R.drawable.joe2));
+//
+//        this.columns.add(new GalleryColumns("column_1", column_1_images));
+//        this.columns.add(new GalleryColumns("column_2", column_2_images));
+//        this.columns.add(new GalleryColumns("column_3", column_3_images));
+//    }
 
     private void initEasyImage() {
         EasyImage.configuration(this)
@@ -125,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void checkPermissions(final Context context) {
         int currentAPIVersion = Build.VERSION.SDK_INT;
-        if (currentAPIVersion >= android.os.Build.VERSION_CODES.M) {
+        if (currentAPIVersion >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
                     AlertDialog.Builder alertBuilder=new AlertDialog.Builder(context);
@@ -200,34 +213,71 @@ public class MainActivity extends AppCompatActivity {
      * @param returnedPhotos
      */
     private void onPhotosReturned(List<File> returnedPhotos) {
-        ArrayList<ColumnImage> column_4_images=new ArrayList<ColumnImage>();
+//        ArrayList<ColumnImage> column_4_images=new ArrayList<ColumnImage>();
 
-//        for(File file: returnedPhotos){
-//            ExifInterface exif=new ExifInterface(file);
-//            Log.v("onPhotosReturned", );
-//        }
-        this.columns.add(new GalleryColumns("column_4", getImageElements(returnedPhotos)));
-        mAdapter.notifyDataSetChanged();
-        mRecyclerView.scrollToPosition(returnedPhotos.size() - 1);
-    }
 
-    /**
-     * given a list of photos, it creates a list of myElements
-     * @param returnedPhotos
-     * @return
-     */
-    private List<ColumnImage> getImageElements(List<File> returnedPhotos) {
-        List<ColumnImage> imageElementList= new ArrayList<>();
-        for (File file: returnedPhotos){
-            ColumnImage element= new ColumnImage(file);
-            imageElementList.add(element);
+
+        try {
+            String filePath, dateStr, day;
+            ExifInterface exif;
+            Date fullDate;
+            int position;
+
+            SimpleDateFormat fullFormat=new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
+            SimpleDateFormat dayFormat=new SimpleDateFormat("yyyy:MM:dd");
+            List<ColumnImage> newColumn;
+            for(File file: returnedPhotos){
+                filePath=file.getAbsolutePath();
+                exif=new ExifInterface(filePath);
+
+                dateStr=exif.getAttribute(ExifInterface.TAG_DATETIME);
+                fullDate=fullFormat.parse(dateStr);
+                day=dayFormat.format(fullDate);
+
+                int index=this.days.indexOf(day);
+                Log.v("onPhotosReturned", "-----------------------");
+                Log.v("onPhotosReturned", "The datetime of this Photo is: "+dateStr);
+                Log.v("onPhotosReturned", "The day of this Photo is: "+day);
+                Log.v("onPhotosReturned", "Index of this Photo is :"+index);
+                Log.v("onPhotosReturned", "filePath of this Photo is :"+filePath);
+                if(index!=-1){
+                    position=this.columns.get(index).addColumnImage(new ColumnImage(file, exif), fullDate);
+                    if(position==-1){
+
+                    }else{
+                        this.photoDatas.add(new PhotoData(filePath, index, position, exif));
+                        Log.v("onPhotosReturned", "The Index Photo is :"+index);
+                        Log.v("onPhotosReturned", "The Position Photo is :"+position);
+//                        this.editViewModel.insertSelectedImage(filePath, index, position, exif);
+                    }
+
+                }else{
+                    index=Util.insertIntoSortedDates(day, this.days, dayFormat);
+                    if(index==-1){
+
+                    }else{
+                        this.columns.add(index, new GalleryColumns(day));
+                        this.columns.get(index).addColumnImage(new ColumnImage(file, exif), fullDate);
+
+                        this.photoDatas.add(new PhotoData(filePath, index, 0, exif));
+                        Log.v("onPhotosReturned", "The Index Photo is :"+index);
+                        Log.v("onPhotosReturned", "The Position Photo is :"+0);
+                    }
+                }
+
+            }
+
+            this.editViewModel.insertSelectedImages(this.photoDatas);
+
+            mAdapter.notifyDataSetChanged();
+            mRecyclerView.scrollToPosition(returnedPhotos.size() - 1);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return imageElementList;
     }
 
-    public Activity getActivity(){
+    public AppCompatActivity getActivity(){
         return this.activity;
-
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -240,10 +290,13 @@ public class MainActivity extends AppCompatActivity {
         switch(item.getItemId()){
             case R.id.sortDate:
                 Toast.makeText(this, "Sort by Date", Toast.LENGTH_SHORT).show();
+                break;
             case R.id.sortPlace:
                 Toast.makeText(this, "Sort by Place", Toast.LENGTH_SHORT).show();
+                break;
             case R.id.setting:
                 Toast.makeText(this, "Setting", Toast.LENGTH_SHORT).show();
+                break;
         }
 
         return false;

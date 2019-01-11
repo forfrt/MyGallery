@@ -1,4 +1,4 @@
-package forfrt.sheffiled.edu.mygallery;
+package forfrt.sheffiled.edu.assignment;
 
 import org.junit.Test;
 

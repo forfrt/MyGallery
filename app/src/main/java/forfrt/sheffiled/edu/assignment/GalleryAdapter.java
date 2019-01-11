@@ -1,8 +1,8 @@
-package forfrt.sheffiled.edu.mygallery;
+package forfrt.sheffiled.edu.assignment;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,9 +10,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.List;
-
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.View_Holder> {
     private Context context;
