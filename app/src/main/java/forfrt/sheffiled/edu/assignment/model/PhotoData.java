@@ -13,6 +13,9 @@ import android.graphics.BitmapFactory;
 import android.media.ExifInterface;
 import android.support.annotation.NonNull;
 
+/**
+ * Data class for store image informations into database
+ */
 @Entity(indices={@Index(value={"title"})})
 public class PhotoData {
     @PrimaryKey(autoGenerate = true)

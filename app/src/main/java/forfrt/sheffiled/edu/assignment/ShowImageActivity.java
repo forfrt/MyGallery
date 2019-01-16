@@ -16,9 +16,9 @@ import java.io.IOException;
 
 import forfrt.sheffiled.edu.assignment.model.PhotoData;
 
-//import com.google.android.material.floatingactionbutton.FloatingActionButton;
-//import androidx.appcompat.app.AppCompatActivity;
-
+/**
+ * scale the selected image to full screen
+ */
 public class ShowImageActivity extends AppCompatActivity {
 
     private PhotoData photo;
@@ -40,11 +40,15 @@ public class ShowImageActivity extends AppCompatActivity {
 
                 this.photo= GalleryAdapter.getItems().get(column_id).images.get(position).photoData;
 
+                /**
+                 * Cannot add more information to unsaved image taken by EasyImage
+                 * Tried to store the bitmap into database by deserialization,
+                 * but it cost too many resources
+                 */
                 if(this.photo==null){
-                    Toast.makeText(getApplicationContext(), "Cannot edit unsaved photo", Toast.LENGTH_SHORT).show();
-                }
-
-                if(this.photo.getFilePath()!=null){
+                    Toast.makeText(getApplicationContext(), "Cannot edit unsaved photo",
+                            Toast.LENGTH_SHORT).show();
+                }else if(this.photo.getFilePath()!=null){
                     Bitmap myBitmap = BitmapFactory.decodeFile(this.photo.getFilePath());
                     imageView.setImageBitmap(myBitmap);
                 }else{
@@ -70,6 +74,7 @@ public class ShowImageActivity extends AppCompatActivity {
         final int finalColumn_id = column_id;
         final Context context = getApplicationContext();
 
+        // Jump to the EditImageActivity
         FloatingActionButton fab_edit = (FloatingActionButton) findViewById(R.id.image_fs_edit);
         fab_edit.setOnClickListener(new View.OnClickListener() {
             @Override

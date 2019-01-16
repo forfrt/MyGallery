@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.media.ExifInterface;
 import android.os.AsyncTask;
 import android.provider.ContactsContract;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,16 +18,19 @@ import java.io.IOException;
 import java.util.List;
 
 import android.support.v7.widget.RecyclerView;
+import android.widget.Toast;
 
 import forfrt.sheffiled.edu.assignment.model.PhotoData;
 import forfrt.sheffiled.edu.assignment.model.ImageElement;
-//import androidx.recyclerview.widget.RecyclerView;
 
+/**
+ * Adapter for the inner recyclerView
+ */
 public class ColumnAdapter extends RecyclerView.Adapter<ColumnAdapter.View_Holder> {
     private int column_id;
     private Context context;
+    // images shown in this recycleView
     private List<ImageElement> images;
-//    private List<ColumnImage> column_images;
 
     public ColumnAdapter(int column_id, List<ImageElement> images){
         this.column_id=column_id;
@@ -38,7 +42,6 @@ public class ColumnAdapter extends RecyclerView.Adapter<ColumnAdapter.View_Holde
         this.context=context;
         this.column_id=column_id;
         this.images=images;
-
     }
 
     @Override
@@ -62,13 +65,19 @@ public class ColumnAdapter extends RecyclerView.Adapter<ColumnAdapter.View_Holde
             }
 
             final int col_id=this.column_id;
+            // Switch to the showImageActivity with information to locate the clicked photo
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context, ShowImageActivity.class);
-                    intent.putExtra("position", position);
-                    intent.putExtra("column_id", col_id);
-                    context.startActivity(intent);
+
+                    if(GalleryAdapter.getItems().get(col_id).images.get(position).photoData==null) {
+                        Toast.makeText(context, "Cannot edit unsaved photo", Toast.LENGTH_SHORT).show();
+                    }else {
+                        Intent intent = new Intent(context, ShowImageActivity.class);
+                        intent.putExtra("position", position);
+                        intent.putExtra("column_id", col_id);
+                        context.startActivity(intent);
+                    }
                 }
             });
 
@@ -138,8 +147,8 @@ public class ColumnAdapter extends RecyclerView.Adapter<ColumnAdapter.View_Holde
                 return decodeSampledBitmapFromResource(filePath, 150, 150);
             }
             Log.v("ColumnAdapter", "null");
+
             return null;
-//            Bitmap myBitmap=decodeSampledBitmapFromResource(column_images.get(holdAndPos.position).file.getAbsolutePath(), 150, 150);
         }
 
         @Override

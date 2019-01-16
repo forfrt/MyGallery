@@ -11,6 +11,9 @@ import forfrt.sheffiled.edu.assignment.EditImageViewInterface;
 import forfrt.sheffiled.edu.assignment.model.PhotoData;
 import forfrt.sheffiled.edu.assignment.model.PhotoModel;
 
+/**
+ * ViewModel class to publish the change of model or update model
+ */
 public class EditImageViewModel extends AndroidViewModel {
 
     PhotoModel photoModel;
@@ -25,12 +28,17 @@ public class EditImageViewModel extends AndroidViewModel {
         this.photoModel.insertSelectedImages(photoDatas);
     }
 
-    public void updateTitleDescByFilePath(String title, String description, String filePath, EditImageViewInterface editImageViewInterface) {
-        this.photoModel.updateTitleDescByFilePath(title, description, filePath, editImageViewInterface);
-    }
+//    public void updateTitleDescByFilePath(String title, String description, String filePath, EditImageViewInterface editImageViewInterface) {
+//        this.photoModel.updateTitleDescByFilePath(title, description, filePath, editImageViewInterface);
+//    }
+//
+//    public void updateTitleDescByGuid(String title, String description, String guid, EditImageViewInterface editImageViewInterface) {
+//        this.photoModel.updateTitleDescByGuid(title, description, guid, editImageViewInterface);
+//    }
 
-    public void updateTitleDescByGuid(String title, String description, String guid, EditImageViewInterface editImageViewInterface) {
-        this.photoModel.updateTitleDescByGuid(title, description, guid, editImageViewInterface);
+    public void updateTitleDesc(PhotoData photoData, EditImageViewInterface editImageViewInterface) {
+        this.photoModel.updateTitleDesc(photoData, editImageViewInterface);
+
     }
 
     public LiveData<PhotoData> getPhotoDataByFilePath(String filePath){

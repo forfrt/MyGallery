@@ -9,6 +9,7 @@ import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
+import android.arch.persistence.room.Update;
 
 import java.util.List;
 
@@ -40,4 +41,8 @@ public interface PhotoDAO {
 
     @Query("UPDATE PhotoData SET title = :title AND description = :description WHERE filePath = :filePath")
     int updateTitleDescByFilePath(String title, String description, String filePath);
+
+    @Update()
+    void update(PhotoData... photoData);
+
 }

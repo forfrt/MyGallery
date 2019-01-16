@@ -103,7 +103,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Log.d("Map Image count===>>>>", images.size()+"");
             Log.d("Map Image count===>>>>", images.getClass()+"");
 
-            for (PhotoData image: images) Log.d("Path", image.getFilePath());
+            for (PhotoData image: images) {
+                Log.d("Path", image.getFilePath());
+                Log.d("Path", image.getTitle());
+                Log.d("Path", image.getDescription());
+            }
         });
 
     }

@@ -25,6 +25,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 
 import java.io.File;
@@ -44,17 +45,21 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_READ_EXTERNAL_STORAGE = 2987;
     private static final int REQUEST_WRITE_EXTERNAL_STORAGE = 7829;
 
+    /**
+     * To set the adpter of recyclerView
+     */
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
+    // The List of GalleryColumn included in this activity
     private List<GalleryColumns> columns;
+    // All PhotoData shown in this activity
     private List<PhotoData> photoDatas;
+    // The titles of GalleryColumns included in this activity
     private List<String> days;
-    private List<String> filePaths;
 
     private EditImageViewModel editViewModel;
-
     private AppCompatActivity activity;
 
     @Override
@@ -70,6 +75,9 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar= (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        /**
+         * To switch between different modules
+         */
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -86,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
                         activity.startActivity(intent);
                         return true;
                     case R.id.album_mode:
+                        Toast.makeText(getApplicationContext(), "Album feature will be coming soon", Toast.LENGTH_SHORT).show();
                         return true;
                 }
                 return false;
@@ -93,19 +102,21 @@ public class MainActivity extends AppCompatActivity {
         });
 
         this.editViewModel=ViewModelProviders.of(this).get(EditImageViewModel.class);
-        Log.v("MainActivity", "Data initilaized");
 
         checkPermissions(getApplicationContext());
         initEasyImage();
 
+        /**
+         * Set the inner layout of recyclerView
+         */
         mRecyclerView = (RecyclerView) findViewById(R.id.gallery_content_columns);
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        Log.v("MainActivity", "Layout set");
         mAdapter = new GalleryAdapter(columns);
         mRecyclerView.setAdapter(mAdapter);
 
+        // Add clickListener to two floating button
         FloatingActionButton fab_camera = (FloatingActionButton) findViewById(R.id.gallery_main_camera);
         fab_camera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -218,6 +229,7 @@ public class MainActivity extends AppCompatActivity {
             byte[] mapBytes;
             PhotoData photoData;
 
+            // Used to get different format of date
             SimpleDateFormat fullFormat=new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
             SimpleDateFormat dayFormat=new SimpleDateFormat("yyyy:MM:dd");
             GalleryColumns newColumn;
@@ -225,13 +237,13 @@ public class MainActivity extends AppCompatActivity {
                 filePath=file.getAbsolutePath();
                 exif=new ExifInterface(filePath);
                 dateStr=exif.getAttribute(ExifInterface.TAG_DATETIME);
-                Log.v("onPhotosReturned", "filePath of image:"+file.getAbsolutePath());
-                Log.v("onPhotosReturned", "dateStr of image:"+dateStr);
 
+                // New photoed image by EasyImage don't have DateTime attribute
                 if(dateStr==null){
                     Date today=new Date();
                     ImageElement image=new ImageElement(file);
                     day=dayFormat.format(today);
+                    // Add to the correct position based on shooting time (In this case, it is now)
                     int index=this.days.indexOf(day);
                     if(index!=-1){
                         position=this.columns.get(index).addDate(today);
@@ -244,6 +256,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }else {
 
+                    // Add to the correct position based on shooting time (Get from exif)
                     guid = exif.getAttribute(ExifInterface.TAG_IMAGE_UNIQUE_ID);
                     fullDate = fullFormat.parse(dateStr);
                     day = dayFormat.format(fullDate);
@@ -257,7 +270,7 @@ public class MainActivity extends AppCompatActivity {
                         position = this.columns.get(index).addDate(fullDate);
                         Log.v("onPhotosReturned", "index of image:" + index + " position of image: " + position);
 
-                        photoData = new PhotoData(guid, filePath, index, position, exif);
+                        photoData = new PhotoData(null, filePath, index, position, exif);
                         this.columns.get(index).addPhotoDate(position, new ImageElement(photoData));
                         if (position == -1) {
                             Log.v("onPhotosReturned", "this.columns.get(index).dates is null");
@@ -275,7 +288,7 @@ public class MainActivity extends AppCompatActivity {
                         } else {
                             newColumn = new GalleryColumns(day);
                             position = newColumn.addDate(fullDate);
-                            photoData = new PhotoData(guid, filePath, index, position, exif);
+                            photoData = new PhotoData(null, filePath, index, position, exif);
                             newColumn.addPhotoDate(position, new ImageElement(photoData));
                             Log.v("onPhotosReturned", "index of image:" + index + "position of image: " + position);
                             this.columns.add(index, newColumn);

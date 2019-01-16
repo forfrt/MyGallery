@@ -15,7 +15,12 @@ import java.util.List;
 import forfrt.sheffiled.edu.assignment.EditImageViewInterface;
 import forfrt.sheffiled.edu.assignment.Util;
 
+/**
+ *
+ * Model class to provide API for data operations
+ */
 public class PhotoModel {
+
     private final PhotoDAO mPhotoDao;
 
     public PhotoModel(Context context) {
@@ -25,7 +30,7 @@ public class PhotoModel {
     }
 
     /**
-     *  it generates a random integer (0 and 1) and returns either an error or a correct message
+     *  Update the title and description of PhotoData by its Guid
      * @param title
      * @param description
      */
@@ -40,6 +45,11 @@ public class PhotoModel {
         }
     }
 
+    /**
+     *  Update the title and description of PhotoData by its FilePath
+     * @param title
+     * @param description
+     */
     public void updateTitleDescByFilePath(String title, String description, String filePath, EditImageViewInterface editViewInterface) {
         if (!title.isEmpty() && (!description.isEmpty())) {
             // data insertion cannot be done on the UI thread. Use an ASync process!!
@@ -51,28 +61,53 @@ public class PhotoModel {
         }
     }
 
+    public void updateTitleDesc(PhotoData photoData, EditImageViewInterface editViewInterface) {
+        if (!photoData.getTitle().isEmpty() && (!photoData.getDescription().isEmpty())) {
+            // data insertion cannot be done on the UI thread. Use an ASync process!!
+            new UpdateDbAsync(this.mPhotoDao,
+                    photoData, editViewInterface).execute();
+        } else{
+            editViewInterface.titleDescritpionError(photoData.getTitle(), photoData.getDescription(), "Tile or Description should not be empty");
+        }
+    }
+
+    /**
+     *  Insert a list of PhotoData asynchronously
+     * @param photoDatas
+     */
     public void insertSelectedImages(List<PhotoData> photoDatas) {
         new InsertDbAsync(this.mPhotoDao, photoDatas).execute();
     }
 
-    public LiveData<PhotoData> getPhotoDataByGuid(String guid){
-        return this.mPhotoDao.retrieveOneDataByGuid(guid);
-    }
-
+    /**
+     *  Get all PhotoData saved in database
+     */
     public LiveData<List<PhotoData>> getAllImage() {
         return this.mPhotoDao.retrieveAllData();
     }
 
+    /**
+     * Retrieve one PhotoData by its guid
+     * @param guid
+     * @return
+     */
+    public LiveData<PhotoData> getPhotoDataByGuid(String guid){
+        return this.mPhotoDao.retrieveOneDataByGuid(guid);
+    }
+
+    /**
+     * Retrieve one PhotoData by its filePath
+     * @param filePath
+     * @return
+     */
     public LiveData<PhotoData> getPhotoDataByFilePath(String filePath){
-//        LiveData<PhotoData> liveData= this.mPhotoDao.retrieveOneDataByFilePath(filePath);
-//        PhotoData data= liveData.getValue();
-//        Log.v("Query", String.format("Photo with FilePath: %s, " +
-//                "desc: %s, filePath: %s Updated", data.getTitle(), data.getDescription(), data.getFilePath()));
-//        return liveData;
         Log.v("Query", String.format("Query Photo with FilePath: %s", filePath));
         return this.mPhotoDao.retrieveOneDataByFilePath(filePath);
     }
 
+    /**
+     * Asynchronous class to update the PhotoData by its Guid
+     */
     private static class UpdateByGuidDbAsync extends AsyncTask<Void, Void, Void> {
         private final PhotoDAO photoDao;
         private final String title;
@@ -105,6 +140,9 @@ public class PhotoModel {
         }
     }
 
+    /**
+     * Asynchronous class to update the PhotoData by its filePath
+     */
     private static class UpdateByFilePathDbAsync extends AsyncTask<Void, Void, Void> {
         private final PhotoDAO photoDao;
         private final String title;
@@ -137,6 +175,9 @@ public class PhotoModel {
         }
     }
 
+    /**
+     * Asynchronous class to insert a list of PhotoData
+     */
     private static class InsertDbAsync extends AsyncTask<Void, Void, Void> {
         private final PhotoDAO photoDao;
         private final List<PhotoData> photoDatas;
@@ -166,6 +207,47 @@ public class PhotoModel {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             Log.v("PhotoModel", "Selected images inserted");
+        }
+    }
+
+    private static class UpdateDbAsync extends AsyncTask<Void, Void, Void> {
+        private final PhotoDAO photoDao;
+        private final PhotoData photoData;
+        public EditImageViewInterface viewInterface=null;
+
+        public UpdateDbAsync(PhotoDAO photoDao,
+                                       PhotoData photoData,
+                                       EditImageViewInterface viewInterface) {
+            this.photoDao = photoDao;
+            this.photoData=photoData;
+            this.viewInterface = viewInterface;
+        }
+
+        @Override
+        protected Void doInBackground(final Void... params) {
+            this.photoDao.updateTitleDescByFilePath(this.photoData.getTitle(),
+                    this.photoData.getDescription(), this.photoData.getFilePath());
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            viewInterface.titleDescritpionInsertedFeedback(this.photoData.getTitle(),
+                    this.photoData.getDescription());
+        }
+    }
+
+    private static class deleteAsyncTask extends AsyncTask<PhotoData, Void, Void> {
+        private PhotoDAO mAsyncTaskDao;
+
+        deleteAsyncTask(PhotoDAO dao) {
+            mAsyncTaskDao = dao;
+        }
+        @Override
+        protected Void doInBackground(final PhotoData... images) {
+            mAsyncTaskDao.delete(images[0]);
+            return null;
         }
     }
 

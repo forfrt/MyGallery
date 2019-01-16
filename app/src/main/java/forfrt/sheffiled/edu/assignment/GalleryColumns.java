@@ -8,22 +8,26 @@ import forfrt.sheffiled.edu.assignment.model.ImageElement;
 import forfrt.sheffiled.edu.assignment.model.PhotoData;
 
 /**
- * this class represents the data supporting the adapter
+ * this class represents the data supporting the adapter GalleryAdapter
  */
 
 class GalleryColumns {
     protected String column_title;
     protected List<ImageElement> images;
+    // Needed to get the index of new added ImageElement
     protected List<Date> dates;
-//    protected List<ColumnImage> images;
 
     public GalleryColumns(String column_title) {
-//        this.images=new ArrayList<ColumnImage>();
         this.column_title = column_title;
         this.images=new ArrayList<ImageElement>();
         this.dates=new ArrayList<Date>();
     }
 
+    /**
+     * Add date to this.dates and get the current index to insert the ImageElement
+     * @param date
+     * @return The index to insert the ImageElement
+     */
     public int addDate(Date date){
         int position=Util.insertIntoSortedDates(date, this.dates);
         return position;

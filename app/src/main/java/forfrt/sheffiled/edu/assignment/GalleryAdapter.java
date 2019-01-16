@@ -11,6 +11,9 @@ import android.widget.TextView;
 
 import java.util.List;
 
+/**
+ * The adapter classs for the outer RecyclerView
+ */
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.View_Holder> {
     private Context context;
     private static List<GalleryColumns> columns;
@@ -52,7 +55,6 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.View_Hol
             holder.recyclerView.setAdapter(columnAdapter);
 
         }
-        //animate(holder);
     }
 
     @Override
@@ -60,6 +62,11 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.View_Hol
         return columns.size();
     }
 
+    /**
+     *
+     * @return All GalleryColumns added into this recyclerView, so other activity could get specific
+     * photo by column_id and position in that column
+     */
     public static List<GalleryColumns> getItems(){
         return columns;
     }

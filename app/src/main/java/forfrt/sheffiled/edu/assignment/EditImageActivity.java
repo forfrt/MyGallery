@@ -19,9 +19,12 @@ import android.widget.Toast;
 import forfrt.sheffiled.edu.assignment.model.PhotoData;
 import forfrt.sheffiled.edu.assignment.viewModel.EditImageViewModel;
 
+/**
+ * Activity to show the detailed information about photo.
+ * Users can edit the title and description of photo at here.
+ */
 public class EditImageActivity extends AppCompatActivity implements EditImageViewInterface {
 
-//    private ColumnImage columnImage;
     EditImageViewModel viewModel;
     private PhotoData photo;
 
@@ -40,7 +43,7 @@ public class EditImageActivity extends AppCompatActivity implements EditImageVie
         if(b != null) {
             position = b.getInt("position");
             column_id = b.getInt("column_id");
-            Log.v("ShowImageActivity", column_id+"/"+position);
+
             if (position!=-1 && column_id!=-1){
                 ImageView imageView = (ImageView) findViewById(R.id.image);
                 final AutoCompleteTextView titleView = (AutoCompleteTextView) findViewById(R.id.title);
@@ -48,10 +51,9 @@ public class EditImageActivity extends AppCompatActivity implements EditImageVie
 
                 this.photo= GalleryAdapter.getItems().get(column_id).images.get(position).photoData;
 
-                if(this.photo==null){
-                    Toast.makeText(getApplicationContext(), "Cannot edit unsaved photo", Toast.LENGTH_SHORT).show();
-                }
-
+                /**
+                 * Get the information about this photo by GUID or by filePath
+                 */
                 if(photo.getGuid()!=null){
                     this.viewModel.getPhotoDataByGuid(photo.getGuid()).observe(this, newValue->{
                         if(newValue!=null){
@@ -74,20 +76,18 @@ public class EditImageActivity extends AppCompatActivity implements EditImageVie
                     Log.v("EditImageActivity", "Update PhotoData have no FilePath and no Guid");
                 }
 
+
                 if(this.photo.getFilePath()!=null){
                     Bitmap myBitmap = BitmapFactory.decodeFile(this.photo.getFilePath());
                     imageView.setImageBitmap(myBitmap);
                 }else{
-//                    try {
-//                        imageView.setImageBitmap((Bitmap) Util.deserialize(this.photo.picture));
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    } catch (ClassNotFoundException e) {
-//                        e.printStackTrace();
-//                    }
+                    Log.v("EditImageActivity", "Update PhotoData have no FilePath");
                 }
 
                 Button button =  findViewById(R.id.store_data);
+                /**
+                 * Edit and update the title and description of this photo
+                 */
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -98,17 +98,22 @@ public class EditImageActivity extends AppCompatActivity implements EditImageVie
                         InputMethodManager imm = (InputMethodManager)getSystemService(EditImageActivity.this.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(descriptionView.getWindowToken(), 0);
 
-                        if(photo.getGuid()!=null){
-                            viewModel.updateTitleDescByGuid(title, description, photo.getGuid(), viewInterface);
-                            Log.v("EditImageActivity", "Update PhotoData with GUID: "
-                                    +photo.getGuid()+" title:"+title+" desc"+description);
-                        }else if(photo.getFilePath()!=null){
-                            viewModel.updateTitleDescByFilePath(title, description, photo.getFilePath(), viewInterface);
-                            Log.v("EditImageActivity", "Update PhotoData with FilePath: "
-                                    +photo.getFilePath()+" title:"+title+" desc"+description);
-                        }else{
-                            Log.v("EditImageActivity", "Update PhotoData have no FilePath and no Guid");
-                        }
+                        photo.setTitle(title);
+                        photo.setDescription(description);
+
+                        viewModel.updateTitleDesc(photo, viewInterface);
+
+//                        if(photo.getGuid()!=null){
+//                            viewModel.updateTitleDescByGuid(title, description, photo.getGuid(), viewInterface);
+//                            Log.v("EditImageActivity", "Update PhotoData with GUID: "
+//                                    +photo.getGuid()+" title:"+title+" desc"+description);
+//                        }else if(photo.getFilePath()!=null){
+//                            viewModel.updateTitleDescByFilePath(title, description, photo.getFilePath(), viewInterface);
+//                            Log.v("EditImageActivity", "Update PhotoData with FilePath: "
+//                                    +photo.getFilePath()+" title:"+title+" desc"+description);
+//                        }else{
+//                            Log.v("EditImageActivity", "Update PhotoData have no FilePath and no Guid");
+//                        }
                     }
                 });
             }
