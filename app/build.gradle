@@ -1,6 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        debug {
+            keyAlias 'com4510'
+            keyPassword 'com4510iscool'
+            storeFile file('C:/Users/forfrt/OneDrive/Documents/Msc_CS&SLP/Mobile/Assignment/keyStore.jks')
+            storePassword 'com4510iscool'
+        }
+    }
     compileSdkVersion 28
     defaultConfig {
         applicationId "forfrt.sheffiled.edu.assignment"
@@ -39,4 +47,8 @@ dependencies {
 
     implementation "android.arch.lifecycle:extensions:1.1.1"
     annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
+
+    implementation 'com.google.maps.android:android-maps-utils:0.5+'
+    implementation 'com.google.android.gms:play-services-location:16.+'
+    implementation 'com.google.android.gms:play-services-maps:16.0.0'
 }

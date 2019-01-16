@@ -16,12 +16,16 @@ import android.widget.ImageView;
 
 //import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.IOException;
+
+import forfrt.sheffiled.edu.assignment.model.PhotoData;
 import forfrt.sheffiled.edu.assignment.presenter.EditImageViewModel;
 
 public class EditImageActivity extends AppCompatActivity implements EditImageViewInterface {
 
-    private ColumnImage columnImage;
+//    private ColumnImage columnImage;
     EditImageViewModel viewModel;
+    private PhotoData photo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,22 +48,41 @@ public class EditImageActivity extends AppCompatActivity implements EditImageVie
                 final AutoCompleteTextView titleView = (AutoCompleteTextView) findViewById(R.id.title);
                 final AutoCompleteTextView descriptionView = (AutoCompleteTextView) findViewById(R.id.description);
 
-                this.columnImage= GalleryAdapter.getItems().get(column_id).images.get(position);
-                String filePath=this.columnImage.file.getAbsolutePath();
-                Log.v("EditImageActivity", filePath);
+                this.photo= GalleryAdapter.getItems().get(column_id).photoDatas.get(position);
 
-                this.viewModel.getPhotoData(filePath).observe(this, newValue->{
-                    if(newValue!=null){
-                        titleView.setText(newValue.getTitle());
-                        descriptionView.setText(newValue.getDescription());
-                    }
-                });
+                if(photo.getGuid()!=null){
+                    this.viewModel.getPhotoDataByGuid(photo.getGuid()).observe(this, newValue->{
+                        if(newValue!=null){
+                            titleView.setText(newValue.getTitle());
+                            descriptionView.setText(newValue.getDescription());
+                            Log.v("EditImageActivity", "Query PhotoData with guid: "
+                                    +photo.getGuid()+" title:"+newValue.getTitle()+" desc"+newValue.getDescription());
+                        }
+                    });
+                }else if(photo.getFilePath()!=null){
+                    this.viewModel.getPhotoDataByFilePath(photo.getFilePath()).observe(this, newValue->{
+                        if(newValue!=null){
+                            titleView.setText(newValue.getTitle());
+                            descriptionView.setText(newValue.getDescription());
+                            Log.v("EditImageActivity", "Query PhotoData with FilePath: "
+                                    +photo.getFilePath()+" title:"+newValue.getTitle()+" desc"+newValue.getDescription());
+                        }
+                    });
+                }else{
+                    Log.v("EditImageActivity", "Update PhotoData have no FilePath and no Guid");
+                }
 
-                if (this.columnImage.image!=-1) {
-                    imageView.setImageResource(this.columnImage.image);
-                } else if (this.columnImage.file!=null) {
-                    Bitmap myBitmap = BitmapFactory.decodeFile(this.columnImage.file.getAbsolutePath());
+                if(this.photo.getFilePath()!=null){
+                    Bitmap myBitmap = BitmapFactory.decodeFile(this.photo.getFilePath());
                     imageView.setImageBitmap(myBitmap);
+                }else{
+//                    try {
+//                        imageView.setImageBitmap((Bitmap) Util.deserialize(this.photo.picture));
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    } catch (ClassNotFoundException e) {
+//                        e.printStackTrace();
+//                    }
                 }
 
                 Button button =  findViewById(R.id.store_data);
@@ -73,7 +96,17 @@ public class EditImageActivity extends AppCompatActivity implements EditImageVie
                         InputMethodManager imm = (InputMethodManager)getSystemService(EditImageActivity.this.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(descriptionView.getWindowToken(), 0);
 
-                        viewModel.updateTitleDesc(title, description, columnImage.file.getAbsolutePath(), viewInterface);
+                        if(photo.getGuid()!=null){
+                            viewModel.updateTitleDescByGuid(title, description, photo.getGuid(), viewInterface);
+                            Log.v("EditImageActivity", "Update PhotoData with GUID: "
+                                    +photo.getGuid()+" title:"+title+" desc"+description);
+                        }else if(photo.getFilePath()!=null){
+                            viewModel.updateTitleDescByFilePath(title, description, photo.getFilePath(), viewInterface);
+                            Log.v("EditImageActivity", "Update PhotoData with FilePath: "
+                                    +photo.getFilePath()+" title:"+title+" desc"+description);
+                        }else{
+                            Log.v("EditImageActivity", "Update PhotoData have no FilePath and no Guid");
+                        }
                     }
                 });
             }

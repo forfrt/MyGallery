@@ -6,10 +6,8 @@ package forfrt.sheffiled.edu.assignment.model;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
-import android.graphics.Bitmap;
 import android.media.ExifInterface;
 import android.support.annotation.NonNull;
 
@@ -18,9 +16,9 @@ public class PhotoData {
     @PrimaryKey(autoGenerate = true)
     @android.support.annotation.NonNull
     private int id=0;
+    private String guid;
     private String title;
     private String description;
-    private String filePath;
     private int lastColumnId;
     private int lastColumnPosition;
     private String La;
@@ -30,17 +28,20 @@ public class PhotoData {
     private String length;
     private String width;
     private String orientation;
+    private String filePath;
+//    @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
+//    public byte[] picture;
 
-//    @Ignore
-//    public Bitmap picture;
 
-    public PhotoData(String title, String description, String filePath,
+
+    public PhotoData(String guid, String title, String description, String filePath,
                      int lastColumnId, int lastColumnPosition,
                      String la, String laRef, String lo, String loRef,
                      String length, String width, String orientation) {
+        this.guid=guid;
         this.title = title;
         this.description = description;
-        this.filePath = filePath;
+        this.filePath=filePath;
         this.lastColumnId = lastColumnId;
         this.lastColumnPosition = lastColumnPosition;
         this.La = la;
@@ -52,9 +53,9 @@ public class PhotoData {
         this.orientation = orientation;
     }
 
-    public PhotoData(String filePath,
+    public PhotoData(String guid, String filePath,
                      int lastColumnId, int lastColumnPosition, ExifInterface exif){
-        this(null, null, filePath,
+        this(guid, null, null, filePath,
                 lastColumnId, lastColumnPosition,
                 exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE),
                 exif.getAttribute(ExifInterface.TAG_GPS_DEST_LATITUDE_REF),
@@ -64,14 +65,12 @@ public class PhotoData {
                 exif.getAttribute(ExifInterface.TAG_IMAGE_WIDTH),
                 exif.getAttribute(ExifInterface.TAG_ORIENTATION)
         );
-
     }
 
-    public PhotoData(String title, String description, String filePath,
+    public PhotoData(String title, String description,
                      int lastColumnId, int lastColumnPosition) {
         this.title= title;
         this.description= description;
-        this.filePath=filePath;
         this.lastColumnId=lastColumnId;
         this.lastColumnPosition=lastColumnPosition;
     }
@@ -83,6 +82,15 @@ public class PhotoData {
     public void setId(@android.support.annotation.NonNull int id) {
         this.id = id;
     }
+
+    public String getGuid() {
+        return guid;
+    }
+
+    public void setGuid(String guid) {
+        this.guid = guid;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -95,14 +103,6 @@ public class PhotoData {
     public void setDescription(String description) {
         this.description = description;
     }
-    public String getFilePath(){return this.filePath;}
-    public void setFilePath(String filePath) { this.filePath = filePath; }
-//    public Bitmap getPicture() {
-//        return picture;
-//    }
-//    public void setPicture(Bitmap picture) {
-//        this.picture = picture;
-//    }
 
     public int getLastColumnId() {
         return lastColumnId;
@@ -175,4 +175,19 @@ public class PhotoData {
     public void setOrientation(String orientation) {
         this.orientation = orientation;
     }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+
+//    public byte[] getPicture() {
+//        return picture;
+//    }
+//    public void setPicture(byte[] picture) {
+//        this.picture = picture;
+//    }
 }

@@ -11,10 +11,17 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
+import java.io.IOException;
+
+import forfrt.sheffiled.edu.assignment.model.PhotoData;
+
 //import com.google.android.material.floatingactionbutton.FloatingActionButton;
 //import androidx.appcompat.app.AppCompatActivity;
 
 public class ShowImageActivity extends AppCompatActivity {
+
+    private PhotoData photo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,13 +36,27 @@ public class ShowImageActivity extends AppCompatActivity {
             Log.v("ShowImageActivity", column_id+"/"+position);
             if (position!=-1){
                 ImageView imageView = (ImageView) findViewById(R.id.image);
-                ColumnImage element= GalleryAdapter.getItems().get(column_id).images.get(position);
-                if (element.image!=-1) {
-                    imageView.setImageResource(element.image);
-                } else if (element.file!=null) {
-                    Bitmap myBitmap = BitmapFactory.decodeFile(element.file.getAbsolutePath());
+
+                this.photo= GalleryAdapter.getItems().get(column_id).photoDatas.get(position);
+                if(this.photo.getFilePath()!=null){
+                    Bitmap myBitmap = BitmapFactory.decodeFile(this.photo.getFilePath());
                     imageView.setImageBitmap(myBitmap);
+                }else{
+//                    try {
+//                        imageView.setImageBitmap((Bitmap) Util.deserialize(this.photo.picture));
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    } catch (ClassNotFoundException e) {
+//                        e.printStackTrace();
+//                    }
                 }
+//                ColumnImage element= GalleryAdapter.getItems().get(column_id).images.get(position);
+//                if (element.image!=-1) {
+//                    imageView.setImageResource(element.image);
+//                } else if (element.file!=null) {
+//                    Bitmap myBitmap = BitmapFactory.decodeFile(element.file.getAbsolutePath());
+//                    imageView.setImageBitmap(myBitmap);
+//                }
             }
         }
 

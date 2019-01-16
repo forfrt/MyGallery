@@ -25,19 +25,31 @@
                 android:layout_height="wrap_content"
                 app:layout_collapseMode="pin">
 
-                <RelativeLayout
-                    android:layout_height="match_parent"
-                    android:layout_width="match_parent">
+                <android.support.design.widget.BottomNavigationView
+                    android:id="@+id/navigation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?android:attr/windowBackground"
+                    app:menu="@menu/main" />
+                    <!--android:layout_marginStart="0dp"-->
+                    <!--android:layout_marginEnd="0dp"-->
+                    <!--app:layout_constraintBottom_toBottomOf="parent"-->
+                    <!--app:layout_constraintLeft_toLeftOf="parent"-->
+                    <!--app:layout_constraintRight_toRightOf="parent"-->
 
-                    <EditText
-                        android:id="@+id/SearchBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:gravity="center"
-                        android:hint="Search"
-                        />
-                </RelativeLayout>
+                <!--<RelativeLayout-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_width="match_parent">-->
+
+                    <!--<EditText-->
+                        <!--android:id="@+id/SearchBox"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_centerInParent="true"-->
+                        <!--android:gravity="center"-->
+                        <!--android:hint="Search"-->
+                        <!--/>-->
+                <!--</RelativeLayout>-->
 
             </android.support.v7.widget.Toolbar>
 
@@ -56,7 +68,7 @@
         android:layout_margin="@dimen/camera_margin"
         app:backgroundTint="@android:color/holo_orange_light"
         app:fabSize="normal"
-        android:src="@drawable/ic_gallery_black_24dp" />
+        android:src="@drawable/gallery_before" />
 
     <!--<com.google.android.material.floatingactionbutton.FloatingActionButton-->
     <android.support.design.widget.FloatingActionButton
@@ -67,6 +79,7 @@
         android:layout_margin="@dimen/gallery_margin"
         app:backgroundTint="@android:color/holo_orange_light"
         app:fabSize="normal"
-        android:src="@drawable/ic_add_a_photo_black_24dp" />
+        android:src="@drawable/camera_button" />
+
 
 </android.support.design.widget.CoordinatorLayout>

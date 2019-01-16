@@ -4,33 +4,39 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.ExifInterface;
 import android.os.AsyncTask;
+import android.provider.ContactsContract;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import java.io.IOException;
 import java.util.List;
 
 import android.support.v7.widget.RecyclerView;
+
+import forfrt.sheffiled.edu.assignment.model.PhotoData;
 //import androidx.recyclerview.widget.RecyclerView;
 
 public class ColumnAdapter extends RecyclerView.Adapter<ColumnAdapter.View_Holder> {
-    private Context context;
     private int column_id;
-    private List<ColumnImage> column_images;
+    private Context context;
+    private List<PhotoData> photoDatas;
+//    private List<ColumnImage> column_images;
 
-    public ColumnAdapter(int column_id, List<ColumnImage> column_images){
+    public ColumnAdapter(int column_id, List<PhotoData> photoDatas){
         this.column_id=column_id;
-        this.column_images=column_images;
-
+        this.photoDatas=photoDatas;
     }
 
-    public ColumnAdapter(Context context, int column_id, List<ColumnImage> column_images){
+    public ColumnAdapter(Context context, int column_id, List<PhotoData> photoDatas){
         super();
         this.context=context;
         this.column_id=column_id;
-        this.column_images=column_images;
+        this.photoDatas=photoDatas;
 
     }
 
@@ -45,15 +51,23 @@ public class ColumnAdapter extends RecyclerView.Adapter<ColumnAdapter.View_Holde
 
     @Override
     public void onBindViewHolder(final View_Holder holder, final int position) {
+        PhotoData photoData=this.photoDatas.get(position);
 
-        if (holder!=null && column_images.get(position)!=null) {
-            if (column_images.get(position).image!=-1) {
-                holder.imageView.setImageResource(column_images.get(position).image);
-            } else if (column_images.get(position).file!=null){
-//                Bitmap myBitmap=decodeSampledBitmapFromResource(column_images.get(position).file.getAbsolutePath(), 150, 150);
-//                holder.imageView.setImageBitmap(myBitmap);
-                new UploadSingleImageTask().execute(new HolderAndPosition(position, holder));
-            }
+        if (holder!=null && photoData!=null) {
+//            if(photoData.getFilePath()!=null){
+//                holder.imageView.setImageBitmap(decodeSampledBitmapFromResource(photoData.getFilePath(), 150, 150));
+//                //Bitmap myBitmap = BitmapFactory.decodeFile(photoData.getFilePath());
+//                //holder.imageView.setImageBitmap(myBitmap);
+//            }else{
+//                try {
+//                    holder.imageView.setImageBitmap((Bitmap) Util.deserialize(photoData.picture));
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                } catch (ClassNotFoundException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+            new UploadSingleImageTask().execute(new HolderAndPosition(position, holder));
 
             final int col_id=this.column_id;
             holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -71,7 +85,7 @@ public class ColumnAdapter extends RecyclerView.Adapter<ColumnAdapter.View_Holde
 
     @Override
     public int getItemCount() {
-        return this.column_images.size();
+        return this.photoDatas.size();
     }
 
     public static class View_Holder extends RecyclerView.ViewHolder {
@@ -120,8 +134,24 @@ public class ColumnAdapter extends RecyclerView.Adapter<ColumnAdapter.View_Holde
         @Override
         protected Bitmap doInBackground(HolderAndPosition... holderAndPositions) {
             holdAndPos=holderAndPositions[0];
-            Bitmap myBitmap=decodeSampledBitmapFromResource(column_images.get(holdAndPos.position).file.getAbsolutePath(), 150, 150);
-            return myBitmap;
+            PhotoData photoData=photoDatas.get(holdAndPos.position);
+            String filePath=photoData.getFilePath();
+            if(filePath!=null){
+                Log.v("ColumnAdapter", filePath);
+                return decodeSampledBitmapFromResource(filePath, 150, 150);
+            }else{
+//                try {
+//                    Log.v("ColumnAdapter", "deserialize");
+//                    return Util.deserialize(photoData.picture);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                } catch (ClassNotFoundException e) {
+//                    e.printStackTrace();
+//                }
+            }
+            Log.v("ColumnAdapter", "null");
+            return null;
+//            Bitmap myBitmap=decodeSampledBitmapFromResource(column_images.get(holdAndPos.position).file.getAbsolutePath(), 150, 150);
         }
 
         @Override

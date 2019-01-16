@@ -28,12 +28,16 @@ public class EditImageViewModel extends AndroidViewModel {
         this.photoModel.insertSelectedImages(photoDatas);
     }
 
-    public void updateTitleDesc(String title, String description, String filePath, EditImageViewInterface editImageViewInterface) {
-        this.photoModel.updateTitleDesc(title, description, filePath, editImageViewInterface);
+    public void updateTitleDescByFilePath(String title, String description, String filePath, EditImageViewInterface editImageViewInterface) {
+        this.photoModel.updateTitleDescByFilePath(title, description, filePath, editImageViewInterface);
     }
 
-    public LiveData<PhotoData> getPhotoData(String filePath){
-        LiveData<PhotoData> photodata=this.photoModel.getPhotoData(filePath);
+    public void updateTitleDescByGuid(String title, String description, String guid, EditImageViewInterface editImageViewInterface) {
+        this.photoModel.updateTitleDescByGuid(title, description, guid, editImageViewInterface);
+    }
+
+    public LiveData<PhotoData> getPhotoDataByFilePath(String filePath){
+        LiveData<PhotoData> photodata=this.photoModel.getPhotoDataByFilePath(filePath);
 
         if (photodata == null) {
             photodata = new MutableLiveData<PhotoData>();
@@ -41,4 +45,12 @@ public class EditImageViewModel extends AndroidViewModel {
         return photodata;
     }
 
+    public LiveData<PhotoData> getPhotoDataByGuid(String guid){
+        LiveData<PhotoData> photodata=this.photoModel.getPhotoDataByGuid(guid);
+
+        if (photodata == null) {
+            photodata = new MutableLiveData<PhotoData>();
+        }
+        return photodata;
+    }
 }

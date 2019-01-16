@@ -29,9 +29,15 @@ public interface PhotoDAO {
     @Delete
     void deleteAll(PhotoData... photoData);
 
-    @Query("SELECT * FROM PhotoData WHERE filePath = :filePath")
-    LiveData<PhotoData> retrieveOneData(String filePath);
+    @Query("SELECT * FROM PhotoData WHERE guid = :guid LIMIT 1")
+    LiveData<PhotoData> retrieveOneDataByGuid(String guid);
 
-    @Query("UPDATE PhotoData SET title=:title AND description=:description WHERE filePath=:filePath")
-    int updateTitleDesc(String title, String description, String filePath);
+    @Query("UPDATE PhotoData SET title = :title AND description = :description WHERE guid = :guid")
+    int updateTitleDescByGuid(String title, String description, String guid);
+
+    @Query("SELECT * FROM PhotoData WHERE filePath = :filePath LIMIT 1")
+    LiveData<PhotoData> retrieveOneDataByFilePath(String filePath);
+
+    @Query("UPDATE PhotoData SET title = :title AND description = :description WHERE filePath = :filePath")
+    int updateTitleDescByFilePath(String title, String description, String filePath);
 }
