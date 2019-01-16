@@ -1,6 +1,7 @@
 package forfrt.sheffiled.edu.assignment;
 
 import android.Manifest;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -9,12 +10,13 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -36,23 +38,45 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
+import forfrt.sheffiled.edu.assignment.model.PhotoData;
+import forfrt.sheffiled.edu.assignment.viewModel.EditImageViewModel;
+
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         OnConnectionFailedListener,
-        LocationListener{
+        LocationListener, GoogleMap.OnMarkerClickListener {
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+    private static final LatLng SHEFFIELD = new LatLng(53.4723272, -2.2935021);
+    private static final LatLng ROTHERHAM = new LatLng(53.4335296, -1.4022718);
+    private static final LatLng LEEDS = new LatLng(53.8060835, -1.6057716);
+    private Marker mSheffield;
+    private Marker mRotherham;
+    private Marker mLeeds;
+//      private List<Image> mLatLngList = new ArrayList<>();
+//      private List<Image> longtitude = new ArrayList<>();
+//      private List<Image> latitude = new ArrayList<>();
+
+//    Double latitude = findViewById(R.id.latitude);
+//    Double longtitude= findViewById(R.id.longtitude);
+
+
+
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
     Marker mCurrLocationMarker;
     LocationRequest mLocationRequest;
     private GoogleMap mMap;
+    //MVVM
+    private RecyclerView recyclerView;
+    private MyAdapter adapter;
+    private EditImageViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.map_main);
+        setContentView(R.layout.activity_maps);
 
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkLocationPermission();
         }
 
@@ -60,9 +84,29 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        //add recyclerView
+        recyclerView = findViewById(R.id.recycler);
+
+        //images = ViewModelProvider
+        adapter = new MyAdapter();
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(),
+                LinearLayoutManager.HORIZONTAL, false));
+
+        viewModel = ViewModelProviders.of(this).get(EditImageViewModel.class);
+        viewModel.getAllImage().observe(this, images -> {
+            MyAdapter.setImages(images);
+           // mLatLngList = MyAdapter.getImages() ;
+
+
+            Log.d("Map Image count===>>>>", images.size()+"");
+            Log.d("Map Image count===>>>>", images.getClass()+"");
+
+            for (PhotoData image: images) Log.d("Path", image.getFilePath());
+        });
+
     }
-
-
 
 
     /**
@@ -81,8 +125,32 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.getUiSettings().setZoomGesturesEnabled(true);
         mMap.getUiSettings().setCompassEnabled(true);
+        //add Marker
+        // Add some markers to the map, and add a data object to each marker.
+//         for(int i= 0; i< mLatLngList.size();i++){
+//             mMap.addMarker(new MarkerOptions()
+//                     .position(mLatLngList)
+//             );
+
+        mSheffield = mMap.addMarker(new MarkerOptions()
+                .position(SHEFFIELD)
+                .title("Sheffield"));
+        mSheffield.setTag(0);
+
+        mRotherham = mMap.addMarker(new MarkerOptions()
+                .position(ROTHERHAM)
+                .title("Rotherham"));
+        mRotherham.setTag(0);
+
+        mLeeds = mMap.addMarker(new MarkerOptions()
+                .position(LEEDS)
+                .title("Leeds"));
+        mLeeds.setTag(0);
+        //mMap.moveCamera(CameraUpdateFactory.newLatLng(LEEDS));
+        mMap.setOnMarkerClickListener(this);
+
         //Initialize Google Play Services
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(this,
                     Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED) {
@@ -130,6 +198,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
     }
+
     public boolean checkLocationPermission() {
 
         if (ContextCompat.checkSelfPermission(this,
@@ -152,12 +221,13 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         }
 
     }
+
     @Override
     public void onLocationChanged(Location location) {
         mLastLocation = location;
         if (mCurrLocationMarker != null) {
             mCurrLocationMarker.remove();
-        }
+       }
         //Showing Current Location Marker on Map
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions();
@@ -192,10 +262,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                 e.printStackTrace();
             }
         }
-
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
         mCurrLocationMarker = mMap.addMarker(markerOptions);
-
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
         if (mGoogleApiClient != null) {
@@ -204,6 +272,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         }
 
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -228,5 +297,25 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         }
     }
 
-}
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        // Retrieve the data from the marker.
+        Integer clickCount = (Integer) marker.getTag();
 
+        // Check if a click count was set, then display the click count.
+        if (clickCount != null) {
+            clickCount = clickCount + 1;
+            marker.setTag(clickCount);
+            Toast.makeText(this,
+                    marker.getTitle() +
+                            " has been clicked " + clickCount + " times.",
+                    Toast.LENGTH_SHORT).show();
+        }
+
+        // Return false to indicate that we have not consumed the event and that we wish
+        // for the default behavior to occur (which is for the camera to move such that the
+        // marker is centered and for the marker's info window to open, if it has one).
+        return false;
+    }
+
+}

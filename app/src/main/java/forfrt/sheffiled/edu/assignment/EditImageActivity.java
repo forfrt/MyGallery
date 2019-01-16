@@ -1,6 +1,5 @@
 package forfrt.sheffiled.edu.assignment;
 
-import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,13 +12,12 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 //import androidx.appcompat.app.AppCompatActivity;
 
-import java.io.IOException;
-
 import forfrt.sheffiled.edu.assignment.model.PhotoData;
-import forfrt.sheffiled.edu.assignment.presenter.EditImageViewModel;
+import forfrt.sheffiled.edu.assignment.viewModel.EditImageViewModel;
 
 public class EditImageActivity extends AppCompatActivity implements EditImageViewInterface {
 
@@ -48,7 +46,11 @@ public class EditImageActivity extends AppCompatActivity implements EditImageVie
                 final AutoCompleteTextView titleView = (AutoCompleteTextView) findViewById(R.id.title);
                 final AutoCompleteTextView descriptionView = (AutoCompleteTextView) findViewById(R.id.description);
 
-                this.photo= GalleryAdapter.getItems().get(column_id).photoDatas.get(position);
+                this.photo= GalleryAdapter.getItems().get(column_id).images.get(position).photoData;
+
+                if(this.photo==null){
+                    Toast.makeText(getApplicationContext(), "Cannot edit unsaved photo", Toast.LENGTH_SHORT).show();
+                }
 
                 if(photo.getGuid()!=null){
                     this.viewModel.getPhotoDataByGuid(photo.getGuid()).observe(this, newValue->{
@@ -129,6 +131,6 @@ public class EditImageActivity extends AppCompatActivity implements EditImageVie
         String stringToShow= "Error in inserting: " +errorString;
         Snackbar.make(anyView, stringToShow, Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
-
     }
+
 }

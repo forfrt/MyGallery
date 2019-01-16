@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.io.IOException;
 
@@ -37,7 +38,12 @@ public class ShowImageActivity extends AppCompatActivity {
             if (position!=-1){
                 ImageView imageView = (ImageView) findViewById(R.id.image);
 
-                this.photo= GalleryAdapter.getItems().get(column_id).photoDatas.get(position);
+                this.photo= GalleryAdapter.getItems().get(column_id).images.get(position).photoData;
+
+                if(this.photo==null){
+                    Toast.makeText(getApplicationContext(), "Cannot edit unsaved photo", Toast.LENGTH_SHORT).show();
+                }
+
                 if(this.photo.getFilePath()!=null){
                     Bitmap myBitmap = BitmapFactory.decodeFile(this.photo.getFilePath());
                     imageView.setImageBitmap(myBitmap);

@@ -48,7 +48,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.View_Hol
             int number_of_column=4;
             holder.recyclerView.setLayoutManager(new GridLayoutManager(this.context, number_of_column));
 
-            ColumnAdapter columnAdapter=new ColumnAdapter(position, columns.get(position).photoDatas);
+            ColumnAdapter columnAdapter=new ColumnAdapter(position, columns.get(position).images);
             holder.recyclerView.setAdapter(columnAdapter);
 
         }

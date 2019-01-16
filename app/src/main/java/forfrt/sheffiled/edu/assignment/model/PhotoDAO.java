@@ -23,8 +23,8 @@ public interface PhotoDAO {
     @Delete
     void delete(PhotoData photoData);
 
-    @Query("SELECT * FROM PhotoData ORDER BY title ASC")
-    List<PhotoData> retrieveAllData();
+    @Query("SELECT * FROM PhotoData ORDER BY id ASC")
+    LiveData<List<PhotoData>> retrieveAllData();
 
     @Delete
     void deleteAll(PhotoData... photoData);

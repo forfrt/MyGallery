@@ -8,6 +8,8 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.ExifInterface;
 import android.support.annotation.NonNull;
 
@@ -81,6 +83,10 @@ public class PhotoData {
     }
     public void setId(@android.support.annotation.NonNull int id) {
         this.id = id;
+    }
+
+    public Bitmap getBitmap() {
+        return BitmapFactory.decodeFile(this.filePath);
     }
 
     public String getGuid() {

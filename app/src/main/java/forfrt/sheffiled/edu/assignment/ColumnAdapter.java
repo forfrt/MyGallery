@@ -19,24 +19,25 @@ import java.util.List;
 import android.support.v7.widget.RecyclerView;
 
 import forfrt.sheffiled.edu.assignment.model.PhotoData;
+import forfrt.sheffiled.edu.assignment.model.ImageElement;
 //import androidx.recyclerview.widget.RecyclerView;
 
 public class ColumnAdapter extends RecyclerView.Adapter<ColumnAdapter.View_Holder> {
     private int column_id;
     private Context context;
-    private List<PhotoData> photoDatas;
+    private List<ImageElement> images;
 //    private List<ColumnImage> column_images;
 
-    public ColumnAdapter(int column_id, List<PhotoData> photoDatas){
+    public ColumnAdapter(int column_id, List<ImageElement> images){
         this.column_id=column_id;
-        this.photoDatas=photoDatas;
+        this.images=images;
     }
 
-    public ColumnAdapter(Context context, int column_id, List<PhotoData> photoDatas){
+    public ColumnAdapter(Context context, int column_id, List<ImageElement> images){
         super();
         this.context=context;
         this.column_id=column_id;
-        this.photoDatas=photoDatas;
+        this.images=images;
 
     }
 
@@ -51,23 +52,14 @@ public class ColumnAdapter extends RecyclerView.Adapter<ColumnAdapter.View_Holde
 
     @Override
     public void onBindViewHolder(final View_Holder holder, final int position) {
-        PhotoData photoData=this.photoDatas.get(position);
+        ImageElement image=this.images.get(position);
 
-        if (holder!=null && photoData!=null) {
-//            if(photoData.getFilePath()!=null){
-//                holder.imageView.setImageBitmap(decodeSampledBitmapFromResource(photoData.getFilePath(), 150, 150));
-//                //Bitmap myBitmap = BitmapFactory.decodeFile(photoData.getFilePath());
-//                //holder.imageView.setImageBitmap(myBitmap);
-//            }else{
-//                try {
-//                    holder.imageView.setImageBitmap((Bitmap) Util.deserialize(photoData.picture));
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                } catch (ClassNotFoundException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-            new UploadSingleImageTask().execute(new HolderAndPosition(position, holder));
+        if (holder!=null && image!=null) {
+            if (image.image!=-1) {
+                holder.imageView.setImageResource(image.image);
+            }else{
+                new UploadSingleImageTask().execute(new HolderAndPosition(position, holder));
+            }
 
             final int col_id=this.column_id;
             holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -85,7 +77,7 @@ public class ColumnAdapter extends RecyclerView.Adapter<ColumnAdapter.View_Holde
 
     @Override
     public int getItemCount() {
-        return this.photoDatas.size();
+        return this.images.size();
     }
 
     public static class View_Holder extends RecyclerView.ViewHolder {
@@ -134,20 +126,16 @@ public class ColumnAdapter extends RecyclerView.Adapter<ColumnAdapter.View_Holde
         @Override
         protected Bitmap doInBackground(HolderAndPosition... holderAndPositions) {
             holdAndPos=holderAndPositions[0];
-            PhotoData photoData=photoDatas.get(holdAndPos.position);
-            String filePath=photoData.getFilePath();
-            if(filePath!=null){
+            ImageElement image=images.get(holdAndPos.position);
+            String filePath;
+            if(image.file!=null){
+                filePath = image.file.getAbsolutePath();
+            }else {
+                filePath = image.photoData.getFilePath();
+            }
+            if (filePath != null) {
                 Log.v("ColumnAdapter", filePath);
                 return decodeSampledBitmapFromResource(filePath, 150, 150);
-            }else{
-//                try {
-//                    Log.v("ColumnAdapter", "deserialize");
-//                    return Util.deserialize(photoData.picture);
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                } catch (ClassNotFoundException e) {
-//                    e.printStackTrace();
-//                }
             }
             Log.v("ColumnAdapter", "null");
             return null;

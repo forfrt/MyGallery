@@ -1,16 +1,13 @@
-package forfrt.sheffiled.edu.assignment.presenter;
+package forfrt.sheffiled.edu.assignment.viewModel;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.MutableLiveData;
-import android.media.ExifInterface;
 
-import java.io.IOException;
 import java.util.List;
 
 import forfrt.sheffiled.edu.assignment.EditImageViewInterface;
-import forfrt.sheffiled.edu.assignment.Util;
 import forfrt.sheffiled.edu.assignment.model.PhotoData;
 import forfrt.sheffiled.edu.assignment.model.PhotoModel;
 
@@ -52,5 +49,9 @@ public class EditImageViewModel extends AndroidViewModel {
             photodata = new MutableLiveData<PhotoData>();
         }
         return photodata;
+    }
+
+    public LiveData<List<PhotoData>> getAllImage() {
+        return this.photoModel.getAllImage();
     }
 }

@@ -9,7 +9,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.media.ExifInterface;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,10 +23,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 
 import java.io.File;
@@ -36,8 +33,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import forfrt.sheffiled.edu.assignment.model.ImageElement;
 import forfrt.sheffiled.edu.assignment.model.PhotoData;
-import forfrt.sheffiled.edu.assignment.presenter.EditImageViewModel;
+import forfrt.sheffiled.edu.assignment.viewModel.EditImageViewModel;
 import pl.aprilapps.easyphotopicker.DefaultCallback;
 import pl.aprilapps.easyphotopicker.EasyImage;
 
@@ -58,25 +56,6 @@ public class MainActivity extends AppCompatActivity {
     private EditImageViewModel editViewModel;
 
     private AppCompatActivity activity;
-
-//    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-//            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-//
-//        @Override
-//        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-//            switch (item.getItemId()) {
-//                case R.id.gallery_mode:
-//                    Intent intent = new Intent(activity, MainActivity.class);
-//                    activity.startActivity(intent);
-//                    return true;
-//                case R.id.map_mode:
-//                    return true;
-//                case R.id.album_mode:
-//                    return true;
-//            }
-//            return false;
-//        }
-//    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
                         activity.startActivity(intent);
                         return true;
                     case R.id.map_mode:
-                        intent = new Intent(activity, MapActivity.class);
+                        intent = new Intent(activity, MapsActivity.class);
                         activity.startActivity(intent);
                         return true;
                     case R.id.album_mode:
@@ -245,44 +224,63 @@ public class MainActivity extends AppCompatActivity {
             for(File file: returnedPhotos){
                 filePath=file.getAbsolutePath();
                 exif=new ExifInterface(filePath);
-//                map=BitmapFactory.decodeFile(file.getAbsolutePath());
-//                mapBytes=Util.serialize(map);
-
                 dateStr=exif.getAttribute(ExifInterface.TAG_DATETIME);
-                guid=exif.getAttribute(ExifInterface.TAG_IMAGE_UNIQUE_ID);
-                fullDate=fullFormat.parse(dateStr);
-                day=dayFormat.format(fullDate);
-                Log.v("onPhotosReturned", "Date of image:"+dateStr);
-                Log.v("onPhotosReturned", "guid of image: "+guid);
+                Log.v("onPhotosReturned", "filePath of image:"+file.getAbsolutePath());
+                Log.v("onPhotosReturned", "dateStr of image:"+dateStr);
 
-                int index=this.days.indexOf(day);
-                if(index!=-1){
-
-                    position=this.columns.get(index).addDate(fullDate);
-                    Log.v("onPhotosReturned", "index of image:"+index+" position of image: "+position);
-
-//                    photoData=new PhotoData(guid, mapBytes, index, position, exif);
-                    photoData=new PhotoData(guid, filePath, index, position, exif);
-                    this.columns.get(index).addPhotoDate(position, photoData);
-                    if(position==-1){
-                        Log.v("onPhotosReturned", "this.columns.get(index).dates is null");
-
-                    }else{
-                        this.photoDatas.add(photoData);
-                    }
-
-                }else{
-                    index=Util.insertIntoSortedDates(day, this.days, dayFormat);
-                    if(index==-1){
-
-                    }else{
+                if(dateStr==null){
+                    Date today=new Date();
+                    ImageElement image=new ImageElement(file);
+                    day=dayFormat.format(today);
+                    int index=this.days.indexOf(day);
+                    if(index!=-1){
+                        position=this.columns.get(index).addDate(today);
+                        this.columns.get(index).addPhotoDate(position, image);
+                    }else {
                         newColumn=new GalleryColumns(day);
-                        position=newColumn.addDate(fullDate);
-                        photoData=new PhotoData(guid, filePath, index, position, exif);
-                        newColumn.addPhotoDate(position, photoData);
-                        Log.v("onPhotosReturned", "index of image:"+index+"position of image: "+position);
-                        this.columns.add(index, newColumn);
-                        this.photoDatas.add(photoData);
+                        newColumn.addDate(today);
+                        newColumn.addPhotoDate(0, image);
+                        this.columns.add(0, newColumn);
+                    }
+                }else {
+
+                    guid = exif.getAttribute(ExifInterface.TAG_IMAGE_UNIQUE_ID);
+                    fullDate = fullFormat.parse(dateStr);
+                    day = dayFormat.format(fullDate);
+
+                    Log.v("MainActivity", String.format("file iterating"));
+                    int index = this.days.indexOf(day);
+
+                    if (index != -1) {
+                        Log.v("MainActivity", String.format("index=%d", index));
+
+                        position = this.columns.get(index).addDate(fullDate);
+                        Log.v("onPhotosReturned", "index of image:" + index + " position of image: " + position);
+
+                        photoData = new PhotoData(guid, filePath, index, position, exif);
+                        this.columns.get(index).addPhotoDate(position, new ImageElement(photoData));
+                        if (position == -1) {
+                            Log.v("onPhotosReturned", "this.columns.get(index).dates is null");
+
+                        } else {
+                            this.photoDatas.add(photoData);
+                        }
+
+                    } else {
+                        index = Util.insertIntoSortedDates(day, this.days, dayFormat);
+                        Log.v("MainActivity", String.format("index=%d", index));
+                        if (index == -1) {
+                            Log.v("MainActivity", "index=-1");
+
+                        } else {
+                            newColumn = new GalleryColumns(day);
+                            position = newColumn.addDate(fullDate);
+                            photoData = new PhotoData(guid, filePath, index, position, exif);
+                            newColumn.addPhotoDate(position, new ImageElement(photoData));
+                            Log.v("onPhotosReturned", "index of image:" + index + "position of image: " + position);
+                            this.columns.add(index, newColumn);
+                            this.photoDatas.add(photoData);
+                        }
                     }
                 }
             }
@@ -300,28 +298,4 @@ public class MainActivity extends AppCompatActivity {
         return this.activity;
     }
 
-
-
-
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.main, menu);
-//        return true;
-//    }
-//
-//    public boolean onOptionsItemSelected(MenuItem item){
-//        switch(item.getItemId()){
-//            case R.id.sortDate:
-//                Toast.makeText(this, "Sort by Date", Toast.LENGTH_SHORT).show();
-//                break;
-//            case R.id.sortPlace:
-//                Toast.makeText(this, "Sort by Place", Toast.LENGTH_SHORT).show();
-//                break;
-//            case R.id.setting:
-//                Toast.makeText(this, "Setting", Toast.LENGTH_SHORT).show();
-//                break;
-//        }
-//
-//        return false;
-//    }
 }

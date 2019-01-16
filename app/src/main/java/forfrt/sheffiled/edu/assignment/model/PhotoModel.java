@@ -59,6 +59,10 @@ public class PhotoModel {
         return this.mPhotoDao.retrieveOneDataByGuid(guid);
     }
 
+    public LiveData<List<PhotoData>> getAllImage() {
+        return this.mPhotoDao.retrieveAllData();
+    }
+
     public LiveData<PhotoData> getPhotoDataByFilePath(String filePath){
 //        LiveData<PhotoData> liveData= this.mPhotoDao.retrieveOneDataByFilePath(filePath);
 //        PhotoData data= liveData.getValue();
