@@ -1,4 +1,4 @@
-package forfrt.sheffiled.edu.assignment;
+package forfrt.sheffiled.edu.assignment.view;
 
 public interface EditImageViewInterface {
     // Used to tell users that the insert operation is complete

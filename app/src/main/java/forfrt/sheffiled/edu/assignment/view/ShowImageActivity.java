@@ -1,4 +1,4 @@
-package forfrt.sheffiled.edu.assignment;
+package forfrt.sheffiled.edu.assignment.view;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,8 +12,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import java.io.IOException;
-
+import forfrt.sheffiled.edu.assignment.R;
 import forfrt.sheffiled.edu.assignment.model.PhotoData;
 
 /**
@@ -34,7 +33,6 @@ public class ShowImageActivity extends AppCompatActivity {
         if(b != null) {
             position = b.getInt("position");
             column_id = b.getInt("column_id");
-            Log.v("ShowImageActivity", column_id+"/"+position);
             if (position!=-1){
                 ImageView imageView = (ImageView) findViewById(R.id.image);
 

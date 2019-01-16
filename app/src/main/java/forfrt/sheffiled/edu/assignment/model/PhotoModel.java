@@ -2,18 +2,13 @@ package forfrt.sheffiled.edu.assignment.model;
 
 import android.arch.lifecycle.LiveData;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.ExifInterface;
 import android.os.AsyncTask;
 import android.util.Log;
 
 
-import java.io.IOException;
 import java.util.List;
 
-import forfrt.sheffiled.edu.assignment.EditImageViewInterface;
-import forfrt.sheffiled.edu.assignment.Util;
+import forfrt.sheffiled.edu.assignment.view.EditImageViewInterface;
 
 /**
  *
@@ -91,7 +86,7 @@ public class PhotoModel {
      * @param guid
      * @return
      */
-    public LiveData<PhotoData> getPhotoDataByGuid(String guid){
+    public LiveData<List<PhotoData>> getPhotoDataByGuid(String guid){
         return this.mPhotoDao.retrieveOneDataByGuid(guid);
     }
 
@@ -100,7 +95,7 @@ public class PhotoModel {
      * @param filePath
      * @return
      */
-    public LiveData<PhotoData> getPhotoDataByFilePath(String filePath){
+    public LiveData<List<PhotoData>> getPhotoDataByFilePath(String filePath){
         Log.v("Query", String.format("Query Photo with FilePath: %s", filePath));
         return this.mPhotoDao.retrieveOneDataByFilePath(filePath);
     }
@@ -219,14 +214,18 @@ public class PhotoModel {
                                        PhotoData photoData,
                                        EditImageViewInterface viewInterface) {
             this.photoDao = photoDao;
-            this.photoData=photoData;
+            this.photoData= photoData;
             this.viewInterface = viewInterface;
         }
 
         @Override
         protected Void doInBackground(final Void... params) {
-            this.photoDao.updateTitleDescByFilePath(this.photoData.getTitle(),
-                    this.photoData.getDescription(), this.photoData.getFilePath());
+            this.photoDao.update(this.photoData);
+//            this.photoDao.updateTitleDescByFilePath(this.photoData.getTitle(),
+//                    this.photoData.getDescription(), this.photoData.getFilePath());
+            Log.v("EditImageActivity", "PhotoModel: Update PhotoData with FilePath: "
+                    +this.photoData.getFilePath()+" title:"+this.photoData.getTitle()
+                    +" desc"+this.photoData.getDescription());
             return null;
         }
 

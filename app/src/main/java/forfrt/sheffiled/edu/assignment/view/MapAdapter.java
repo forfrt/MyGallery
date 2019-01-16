@@ -2,11 +2,10 @@
  * Copyright (c) 2017. This code has been developed by Fabio Ciravegna, The University of Sheffield. All rights reserved. No part of this code can be used without the explicit written permission by the author
  */
 
-package forfrt.sheffiled.edu.assignment;
+package forfrt.sheffiled.edu.assignment.view;
 
 import android.content.Context;
 import android.content.Intent;
-import android.provider.ContactsContract;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,9 +15,10 @@ import android.widget.ImageView;
 import java.util.ArrayList;
 import java.util.List;
 
+import forfrt.sheffiled.edu.assignment.R;
 import forfrt.sheffiled.edu.assignment.model.PhotoData;
 
-public class MyAdapter extends RecyclerView.Adapter<MyAdapter.View_Holder> {
+public class MapAdapter extends RecyclerView.Adapter<MapAdapter.View_Holder> {
     static private Context context;
 
     //defined the field images  as a list
@@ -31,7 +31,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.View_Holder> {
     //define a setter for this field
     public static void setImages(List<PhotoData> items) {
 
-        MyAdapter.images = items;
+        MapAdapter.images = items;
     }
 
     @Override

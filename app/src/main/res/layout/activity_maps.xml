@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:paddingLeft="2.5dp"
     android:paddingRight="2.5dp"
-    tools:context=".MapsActivity">
+    tools:context=".view.MapsActivity">
 
     <fragment
         android:id="@+id/map"

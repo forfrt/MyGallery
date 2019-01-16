@@ -1,4 +1,4 @@
-package forfrt.sheffiled.edu.assignment;
+package forfrt.sheffiled.edu.assignment.view;
 
 import android.Manifest;
 import android.arch.lifecycle.ViewModelProviders;
@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+import forfrt.sheffiled.edu.assignment.R;
 import forfrt.sheffiled.edu.assignment.model.PhotoData;
 import forfrt.sheffiled.edu.assignment.viewModel.EditImageViewModel;
 
@@ -68,7 +69,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     //MVVM
     private RecyclerView recyclerView;
-    private MyAdapter adapter;
+    private MapAdapter adapter;
     private EditImageViewModel viewModel;
 
     @Override
@@ -89,15 +90,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         recyclerView = findViewById(R.id.recycler);
 
         //images = ViewModelProvider
-        adapter = new MyAdapter();
+        adapter = new MapAdapter();
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(),
                 LinearLayoutManager.HORIZONTAL, false));
 
         viewModel = ViewModelProviders.of(this).get(EditImageViewModel.class);
         viewModel.getAllImage().observe(this, images -> {
-            MyAdapter.setImages(images);
-           // mLatLngList = MyAdapter.getImages() ;
+            MapAdapter.setImages(images);
+           // mLatLngList = MapAdapter.getImages() ;
 
 
             Log.d("Map Image count===>>>>", images.size()+"");

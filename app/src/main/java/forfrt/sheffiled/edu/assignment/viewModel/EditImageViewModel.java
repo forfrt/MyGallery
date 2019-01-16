@@ -7,7 +7,7 @@ import android.arch.lifecycle.MutableLiveData;
 
 import java.util.List;
 
-import forfrt.sheffiled.edu.assignment.EditImageViewInterface;
+import forfrt.sheffiled.edu.assignment.view.EditImageViewInterface;
 import forfrt.sheffiled.edu.assignment.model.PhotoData;
 import forfrt.sheffiled.edu.assignment.model.PhotoModel;
 
@@ -41,20 +41,20 @@ public class EditImageViewModel extends AndroidViewModel {
 
     }
 
-    public LiveData<PhotoData> getPhotoDataByFilePath(String filePath){
-        LiveData<PhotoData> photodata=this.photoModel.getPhotoDataByFilePath(filePath);
+    public LiveData<List<PhotoData>> getPhotoDataByFilePath(String filePath){
+        LiveData<List<PhotoData>> photodata=this.photoModel.getPhotoDataByFilePath(filePath);
 
         if (photodata == null) {
-            photodata = new MutableLiveData<PhotoData>();
+            photodata = new MutableLiveData<List<PhotoData>>();
         }
         return photodata;
     }
 
-    public LiveData<PhotoData> getPhotoDataByGuid(String guid){
-        LiveData<PhotoData> photodata=this.photoModel.getPhotoDataByGuid(guid);
+    public LiveData<List<PhotoData>> getPhotoDataByGuid(String guid){
+        LiveData<List<PhotoData>> photodata=this.photoModel.getPhotoDataByGuid(guid);
 
         if (photodata == null) {
-            photodata = new MutableLiveData<PhotoData>();
+            photodata = new MutableLiveData<List<PhotoData>>();
         }
         return photodata;
     }

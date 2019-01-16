@@ -1,4 +1,4 @@
-package forfrt.sheffiled.edu.assignment;
+package forfrt.sheffiled.edu.assignment.view;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.graphics.Bitmap;
@@ -12,10 +12,13 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
+import android.widget.TextView;
 
 //import androidx.appcompat.app.AppCompatActivity;
 
+import org.w3c.dom.Text;
+
+import forfrt.sheffiled.edu.assignment.R;
 import forfrt.sheffiled.edu.assignment.model.PhotoData;
 import forfrt.sheffiled.edu.assignment.viewModel.EditImageViewModel;
 
@@ -48,6 +51,7 @@ public class EditImageActivity extends AppCompatActivity implements EditImageVie
                 ImageView imageView = (ImageView) findViewById(R.id.image);
                 final AutoCompleteTextView titleView = (AutoCompleteTextView) findViewById(R.id.title);
                 final AutoCompleteTextView descriptionView = (AutoCompleteTextView) findViewById(R.id.description);
+                final TextView timeView=(TextView) findViewById(R.id.time);
 
                 this.photo= GalleryAdapter.getItems().get(column_id).images.get(position).photoData;
 
@@ -56,20 +60,20 @@ public class EditImageActivity extends AppCompatActivity implements EditImageVie
                  */
                 if(photo.getGuid()!=null){
                     this.viewModel.getPhotoDataByGuid(photo.getGuid()).observe(this, newValue->{
-                        if(newValue!=null){
-                            titleView.setText(newValue.getTitle());
-                            descriptionView.setText(newValue.getDescription());
+                        if(newValue.get(0)!=null){
+                            titleView.setText(newValue.get(0).getTitle());
+                            descriptionView.setText(newValue.get(0).getDescription());
                             Log.v("EditImageActivity", "Query PhotoData with guid: "
-                                    +photo.getGuid()+" title:"+newValue.getTitle()+" desc"+newValue.getDescription());
+                                    +photo.getGuid()+" title:"+newValue.get(0).getTitle()+" desc"+newValue.get(0).getDescription());
                         }
                     });
                 }else if(photo.getFilePath()!=null){
                     this.viewModel.getPhotoDataByFilePath(photo.getFilePath()).observe(this, newValue->{
                         if(newValue!=null){
-                            titleView.setText(newValue.getTitle());
-                            descriptionView.setText(newValue.getDescription());
+                            titleView.setText(newValue.get(0).getTitle());
+                            descriptionView.setText(newValue.get(0).getDescription());
                             Log.v("EditImageActivity", "Query PhotoData with FilePath: "
-                                    +photo.getFilePath()+" title:"+newValue.getTitle()+" desc"+newValue.getDescription());
+                                    +newValue.get(0).getFilePath()+" title:"+newValue.get(0).getTitle()+" desc"+newValue.get(0).getDescription());
                         }
                     });
                 }else{
@@ -100,6 +104,9 @@ public class EditImageActivity extends AppCompatActivity implements EditImageVie
 
                         photo.setTitle(title);
                         photo.setDescription(description);
+
+                        Log.v("EditImageActivity", "Update PhotoData with FilePath: "
+                                +photo.getFilePath()+" title:"+title+" desc"+description);
 
                         viewModel.updateTitleDesc(photo, viewInterface);
 

@@ -1,4 +1,4 @@
-package forfrt.sheffiled.edu.assignment;
+package forfrt.sheffiled.edu.assignment.view;
 
 import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;
@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.List;
+
+import forfrt.sheffiled.edu.assignment.R;
 
 /**
  * The adapter classs for the outer RecyclerView

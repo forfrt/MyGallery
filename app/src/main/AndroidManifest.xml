@@ -22,7 +22,7 @@
 
         <!--android:theme="@style/AppTheme.NoActionBar"-->
         <activity
-            android:name=".MainActivity"
+            android:name=".view.MainActivity"
             android:theme="@style/Theme.Design.NoActionBar"
             android:exported="true"
             >
@@ -34,17 +34,17 @@
         </activity>
 
         <activity
-            android:name=".ShowImageActivity"
+            android:name=".view.ShowImageActivity"
             android:theme="@style/Theme.Design.NoActionBar"
             />
 
         <activity
-            android:name=".EditImageActivity"
+            android:name=".view.EditImageActivity"
             android:theme="@style/Theme.Design.NoActionBar"
             />
 
         <activity
-            android:name=".MapsActivity"
+            android:name=".view.MapsActivity"
             android:theme="@style/Theme.Design.NoActionBar"
             />
 

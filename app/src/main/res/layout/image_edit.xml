@@ -38,6 +38,14 @@
         >
         <!--app:layout_constraintTop_toTopOf="@+id/center_guideline"-->
 
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:maxLines="1"
+            android:textSize="10dp" />
+
         <!--<com.google.android.material.textfield.TextInputLayout-->
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"

@@ -1,26 +1,22 @@
-package forfrt.sheffiled.edu.assignment;
+package forfrt.sheffiled.edu.assignment.view;
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.ExifInterface;
 import android.os.AsyncTask;
-import android.provider.ContactsContract;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import java.io.IOException;
 import java.util.List;
 
 import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 
-import forfrt.sheffiled.edu.assignment.model.PhotoData;
+import forfrt.sheffiled.edu.assignment.R;
 import forfrt.sheffiled.edu.assignment.model.ImageElement;
 
 /**

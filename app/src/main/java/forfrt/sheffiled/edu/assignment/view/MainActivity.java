@@ -1,4 +1,4 @@
-package forfrt.sheffiled.edu.assignment;
+package forfrt.sheffiled.edu.assignment.view;
 
 import android.Manifest;
 import android.annotation.TargetApi;
@@ -34,6 +34,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import forfrt.sheffiled.edu.assignment.R;
+import forfrt.sheffiled.edu.assignment.Util;
 import forfrt.sheffiled.edu.assignment.model.ImageElement;
 import forfrt.sheffiled.edu.assignment.model.PhotoData;
 import forfrt.sheffiled.edu.assignment.viewModel.EditImageViewModel;
